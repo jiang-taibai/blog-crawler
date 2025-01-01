@@ -64,3 +64,7 @@ conda create -n blog-crawler python=3.9
 conda activate blog-crawler
 pip install -r requirements.txt
 ```
+
+```shell
+python main.py
+```
