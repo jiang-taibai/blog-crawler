@@ -1,7 +1,8 @@
 {
   "OASystem": {
     "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjVkNTRiMzMwLTk0MjctNDkxNi1hOWU0LWM5ZGU4NDZhYmVkOSJ9.fK23fPChi0MHjSmyi5h5COfjykrhOYOxC71hxJ7o0MHVpsdRRShIsnvgF_ejCKGTSJ8JD-_qR6Rpb7-ZhNk43A",
-    "UploadURL": "http://localhost:8080/article/upload-image",
-    "AddArticleURL": "http://localhost:8080/article/add"
+    "BaseURL": "http://localhost:8080",
+    "UploadApiPath": "/article/upload-image",
+    "AddArticleApiPath": "/article/add"
   }
 }

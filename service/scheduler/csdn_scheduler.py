@@ -1,6 +1,7 @@
 from service.downloader.html_downloader import HTMLDownloader
+from service.downloader.image_downloader import CSDNImageDownloader
 from service.parser.csdn_parser import CSDNContentParser
-from service.persistence.persistence import OADatabasePersistence
+from service.persistence.persistence import OASystemPersistence
 from service.scheduler.scheduler import URLProducer, URLConsumer
 from utils.logger import logger
 
@@ -44,14 +45,15 @@ class CSDNURLProducer(URLProducer):
 
 class CSDNURLConsumer(URLConsumer):
     def __init__(self):
-        self.downloader = HTMLDownloader()
-        self.parser = CSDNContentParser()
-        self.persistence = OADatabasePersistence()
         super().__init__(task_type='CSDN')
+        self.persistence = OASystemPersistence()
+        self.html_downloader = HTMLDownloader()
+        self.image_downloader = CSDNImageDownloader()
+        self.parser = CSDNContentParser(self.persistence, self.image_downloader)
 
     def _process_url(self, url):
         logger.info(f"开始处理CSDN博客: {url}")
-        html_content = self.downloader.download(url)
+        html_content = self.html_downloader.download(url)
         if html_content:
             result = self.parser.parse(html_content)
             self.persistence.save_article(

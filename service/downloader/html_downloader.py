@@ -2,6 +2,8 @@ import os.path
 
 import requests
 import time
+
+from fake_useragent import UserAgent
 from requests.exceptions import RequestException
 
 from utils.data import resolve_data_path
@@ -9,28 +11,42 @@ from utils.logger import logger
 
 
 class HTMLDownloader:
-    def __init__(self):
-        self.session = requests.Session()
-        self.retry_count = 3
-        self.timeout = 5
-        self.__initialized = True
-        self.headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36'
-        }
-        self.proxies = {'http': None, 'https': None}  # 禁用系统代理
+    def __init__(self, retry_count: int = 3):
+        """
+        初始化 HTML 下载器
+        :param retry_count: 下载失败时的重试次数
+        """
+        self.retry_count = retry_count
+        self.ua = UserAgent()
 
-    def download(self, url):
-        """下载网页内容，处理超时和重试逻辑"""
+    def get_requests_configs(self) -> dict:
+        """
+        获取请求配置，包括 headers 和 proxies 等
+        :return: 配置字典
+        """
+        return {
+            'headers': {
+                'User-Agent': self.ua.random
+            },
+            # 禁用系统代理
+            'proxies': {
+                'http': None,
+                'https': None
+            },
+            'timeout': 10,
+        }
+
+    def download(self, url: str) -> str or None:
+        """
+        下载网页内容
+        :param url: 网页 URL
+        :return: 网页内容，下载失败时返回 None
+        """
         attempt = 0
         while attempt < self.retry_count:
             try:
                 logger.info(f"第 {attempt + 1} 次尝试下载 {url}")
-                response = self.session.get(
-                    url,
-                    timeout=self.timeout,
-                    headers=self.headers,
-                    proxies=self.proxies
-                )
+                response = requests.get(url, **self.get_requests_configs())
                 if response.status_code == 200:
                     logger.info(f"下载 {url} 成功")
                     return response.text
@@ -49,9 +65,10 @@ def main():
     url = 'https://blog.csdn.net/qq_29997037/article/details/138949768'
     content = downloader.download(url)
     dir_path = resolve_data_path("./csdn-html/")
-    with open(os.path.join(dir_path, 'csdn.html'), 'w', encoding='utf-8') as file:
+    file_path = os.path.join(dir_path, 'csdn.html')
+    with open(file_path, 'w', encoding='utf-8') as file:
         file.write(content)
-    print("下载完成")
+    logger.info(f"网页内容已保存到 {file_path}")
 
 
 if __name__ == '__main__':
