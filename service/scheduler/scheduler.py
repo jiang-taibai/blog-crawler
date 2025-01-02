@@ -63,7 +63,9 @@ class BaseProducer(threading.Thread, ABC):
 
     @abstractmethod
     def run(self):
-        pass
+        while self.running and self.scheduler.running:
+            logger.info(f"生成 {self.task_type} 的任务")
+            time.sleep(1)
 
 
 class BaseConsumer(threading.Thread, ABC):
@@ -84,4 +86,9 @@ class BaseConsumer(threading.Thread, ABC):
 
     @abstractmethod
     def run(self):
-        pass
+        while self.running and self.scheduler.running:
+            try:
+                task = self.scheduler.task_queues[self.task_type].get(timeout=1)
+                logger.info(f"获取到 {self.task_type} 的任务")
+            except queue.Empty:
+                pass

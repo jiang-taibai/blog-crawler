@@ -15,6 +15,46 @@
 
 ## 2. 项目结构
 
+### 2.1 基础的生产者-调度器-消费者模型
+
+```mermaid
+sequenceDiagram
+    participant Producer as Producer
+    participant Scheduler as Scheduler
+    participant Consumer as Consumer
+
+    alt 运行条件：还有更多 Task
+        loop 不断生成 Task
+            Producer ->> Scheduler: 发送 Task
+            Scheduler -->> Producer: 确认接收
+        end
+    else 运行条件：已无更多Task
+        Producer ->> Producer: 停止
+    end
+
+    alt 运行条件：Scheduler 未停止工作
+        loop 不断获取 Task
+            Consumer ->> Scheduler: 获取 Task
+            Scheduler -->> Consumer: 返回 url
+            Consumer ->> Consumer: 处理 URL
+        end
+    else 运行条件：Scheduler 已停止工作
+        Consumer ->> Consumer: 停止
+    end
+
+    loop 循环自我管理
+        alt 如果所有生产者都停止工作，并且所有的队列为空
+            Scheduler -->> Scheduler: 停止工作
+        end
+        alt 否则
+            Scheduler -->> Scheduler: 继续工作
+        end
+    end
+
+```
+
+### 2.2 项目实现的基于 TYPE-URL 的生产者-调度器-消费者模型
+
 ```mermaid
 sequenceDiagram
     participant URLProducer as URLProducer 子类
@@ -46,7 +86,6 @@ sequenceDiagram
     ContentParser -->> URLConsumer: 返回解析结果 (标题、内容、图片链接等)
     URLConsumer ->> Persistence: 持久化博客数据 (标题、内容、封面、简介等)
     Persistence -->> URLConsumer: 数据持久化完成
-    URLConsumer -->> URLScheduler: 标记 URL 处理完成
 ```
 
 ## 3. 快速开始
