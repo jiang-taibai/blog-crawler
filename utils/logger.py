@@ -11,7 +11,7 @@ class LogColorFormatter(logging.Formatter):
         'INFO': '\033[92m',  # 绿色
         'WARNING': '\033[93m',  # 黄色
         'ERROR': '\033[91m',  # 红色
-        'CRITICAL': '\033[95m'  # 洋红色
+        'CRITICAL': '\033[95m',  # 洋红色
     }
     RESET = '\033[0m'
 
@@ -47,7 +47,9 @@ class Logger:
             if not Logger._logger.handlers:
                 console_handler = logging.StreamHandler()
                 console_handler.setLevel(console_level)
-                console_format = LogColorFormatter('%(asctime)s - %(levelname)s - %(message)s')
+                console_format = LogColorFormatter(
+                    '%(asctime)s - [%(filename)s:%(lineno)04d] - %(levelname)8s - %(message)s'
+                )
                 console_handler.setFormatter(console_format)
                 Logger._logger.addHandler(console_handler)
 
@@ -60,7 +62,9 @@ class Logger:
 
                 file_handler = logging.FileHandler(log_file, encoding='utf-8')
                 file_handler.setLevel(file_level)
-                file_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+                file_format = logging.Formatter(
+                    '%(asctime)s - [%(filename)s:%(lineno)04d] - %(levelname)8s - %(message)s'
+                )
                 file_handler.setFormatter(file_format)
                 Logger._logger.addHandler(file_handler)
 
