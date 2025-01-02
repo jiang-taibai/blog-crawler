@@ -21,7 +21,7 @@ class Persistence(ABC):
         pass
 
     @abstractmethod
-    def upload(self, file):
+    def upload_image(self, file):
         """上传文件到数据库"""
         pass
 
@@ -57,6 +57,24 @@ class OASystemPersistence(Persistence):
             'timeout': 10,
         }
 
+    def get_file_requests_configs(self) -> dict:
+        """
+        获取请求配置，包括 headers 和 proxies 等
+        :return: 配置字典
+        """
+        return {
+            'headers': {
+                'User-Agent': self.ua.random,
+                'Authorization': get_system_config('OASystem', 'Authorization')
+            },
+            # 禁用系统代理
+            'proxies': {
+                'http': None,
+                'https': None
+            },
+            'timeout': 10,
+        }
+
     def save_article(self, title: str, cover: str, content: str, category: str, brief: str, urls: list):
         """保存文章到远程 HTTP 数据库接口"""
         payload = {
@@ -74,7 +92,7 @@ class OASystemPersistence(Persistence):
         else:
             raise Exception(f"保存文章【{title}】失败 {response.status_code}: {response.text}")
 
-    def upload(self, file):
+    def upload_image(self, file):
         """上传文件到 HTTP 接口，支持文件路径或二进制内容"""
         if isinstance(file, str):
             if not os.path.isfile(file):
@@ -82,10 +100,10 @@ class OASystemPersistence(Persistence):
                 raise FileNotFoundError(f"文件未找到: {file}")
             with open(file, 'rb') as f:
                 files = {'file': (os.path.basename(file), f)}
-                response = requests.post(self.upload_api_path, files=files, **self.get_requests_configs())
+                response = requests.post(self.base_url + self.upload_api_path, files=files, **self.get_file_requests_configs())
         elif isinstance(file, bytes):
             files = {'file': (f'image.jpg', file)}
-            response = requests.post(self.base_url + self.upload_api_path, files=files, **self.get_requests_configs())
+            response = requests.post(self.base_url + self.upload_api_path, files=files, **self.get_file_requests_configs())
         else:
             logger.error("不支持的文件类型。预期为文件路径 (str) 或二进制内容 (bytes)。")
             raise TypeError("不支持的文件类型。预期为文件路径 (str) 或二进制内容 (bytes)。")
