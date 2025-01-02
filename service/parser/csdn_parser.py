@@ -145,6 +145,9 @@ class CSDNContentParser(ContentParser):
         :return: 封面图片链接
         """
         cover = content_views_element.find('img')
+        if not cover:
+            logger.info("本文无图片，不使用封面")
+            return None
         try:
             img_data = self.image_downloader.download_image(cover['src'])
             upload_response = self.uploader.upload_image(img_data)
