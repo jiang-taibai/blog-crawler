@@ -1,5 +1,6 @@
-from service.scheduler.url_csdn_scheduler import CSDNURLProducer, CSDNURLConsumer
+from service.scheduler.url_base_csdn_scheduler import CSDNURLProducer, CSDNURLConsumer
 from service.scheduler.url_base_scheduler import URLScheduler
+from utils.logger import logger
 
 
 def main():
@@ -14,7 +15,7 @@ def main():
     producer.join()
     consumer.join()
 
-    print('爬虫结束')
+    logger.info('爬虫结束')
 
 
 if __name__ == '__main__':
