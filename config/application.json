@@ -1,0 +1,10 @@
+{
+  "OASystem": {
+    "BaseURL": "http://localhost:8080",
+    "UploadApiPath": "/article/upload-image",
+    "AddArticleApiPath": "/article/add"
+  },
+  "Application": {
+    "Profiles": "prod"
+  }
+}

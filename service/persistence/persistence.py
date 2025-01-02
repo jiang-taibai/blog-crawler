@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 import requests
 from fake_useragent import UserAgent
 
-from utils.config import get_system_config
+from utils.config import config
 from utils.logger import logger
 
 
@@ -33,9 +33,9 @@ class OASystemPersistence(Persistence):
 
     def __init__(self):
         super().__init__()
-        self.base_url = get_system_config('OASystem', 'BaseURL')
-        self.upload_api_path = get_system_config('OASystem', 'UploadApiPath')
-        self.add_article_api_path = get_system_config('OASystem', 'AddArticleApiPath')
+        self.base_url = config.get('OASystem', 'BaseURL')
+        self.upload_api_path = config.get('OASystem', 'UploadApiPath')
+        self.add_article_api_path = config.get('OASystem', 'AddArticleApiPath')
         self.ua = UserAgent()
 
     def get_requests_configs(self) -> dict:
@@ -47,7 +47,7 @@ class OASystemPersistence(Persistence):
             'headers': {
                 'Content-Type': 'application/json',
                 'User-Agent': self.ua.random,
-                'Authorization': get_system_config('OASystem', 'Authorization')
+                'Authorization': config.get('OASystem', 'Authorization')
             },
             # 禁用系统代理
             'proxies': {
@@ -65,7 +65,7 @@ class OASystemPersistence(Persistence):
         return {
             'headers': {
                 'User-Agent': self.ua.random,
-                'Authorization': get_system_config('OASystem', 'Authorization')
+                'Authorization': config.get('OASystem', 'Authorization')
             },
             # 禁用系统代理
             'proxies': {
@@ -100,10 +100,12 @@ class OASystemPersistence(Persistence):
                 raise FileNotFoundError(f"文件未找到: {file}")
             with open(file, 'rb') as f:
                 files = {'file': (os.path.basename(file), f)}
-                response = requests.post(self.base_url + self.upload_api_path, files=files, **self.get_file_requests_configs())
+                response = requests.post(self.base_url + self.upload_api_path, files=files,
+                                         **self.get_file_requests_configs())
         elif isinstance(file, bytes):
             files = {'file': (f'image.jpg', file)}
-            response = requests.post(self.base_url + self.upload_api_path, files=files, **self.get_file_requests_configs())
+            response = requests.post(self.base_url + self.upload_api_path, files=files,
+                                     **self.get_file_requests_configs())
         else:
             logger.error("不支持的文件类型。预期为文件路径 (str) 或二进制内容 (bytes)。")
             raise TypeError("不支持的文件类型。预期为文件路径 (str) 或二进制内容 (bytes)。")
