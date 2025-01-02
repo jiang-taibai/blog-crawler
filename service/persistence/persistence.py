@@ -87,7 +87,7 @@ class OASystemPersistence(Persistence):
         }
         response = requests.post(self.base_url + self.add_article_api_path, json=payload, **self.get_requests_configs())
         if response.status_code == 200 and response.json()['code'] == 200:
-            logger.info(f"成功保存文章: {title}")
+            logger.info(f"成功保存文章: 《{title}》")
             return response.json()
         else:
             raise Exception(f"保存文章【{title}】失败 {response.status_code}: {response.text}")
