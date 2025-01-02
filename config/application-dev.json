@@ -1,5 +1,5 @@
 {
   "OASystem": {
-    "Authorization": "Bearer ***********密钥***************"
+    "Authorization": "Bearer ***********请填写OA系统的授权密钥***************"
   }
 }
