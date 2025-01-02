@@ -144,19 +144,19 @@ class CSDNContentParser(ContentParser):
         :param content_views_element: 文章内容元素
         :return: 封面图片链接
         """
-        cover = content_views_element.find('img')
-        if not cover:
-            logger.info("本文无图片，不使用封面")
-            return None
-        try:
-            img_data = self.image_downloader.download_image(cover['src'])
-            upload_response = self.uploader.upload_image(img_data)
-            if upload_response and upload_response.get('code') == 200:
-                cover_src = upload_response.get('data').get('url')
-                return cover_src
-        except Exception as e:
-            logger.error(f"下载/上传封面图片失败: {e}")
-            return None
+        covers = content_views_element.find_all('img')
+        for cover in covers:
+            if not cover or not cover.get('src'):
+                continue
+            try:
+                img_data = self.image_downloader.download_image(cover.get('src'))
+                upload_response = self.uploader.upload_image(img_data)
+                if upload_response and upload_response.get('code') == 200:
+                    cover_src = upload_response.get('data').get('url')
+                    return cover_src
+            except Exception as e:
+                logger.warning(f"下载/上传封面图片失败: {e}")
+        logger.info("文章中未出现图片，不使用封面")
         return None
 
     @staticmethod
