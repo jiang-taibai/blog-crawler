@@ -2,15 +2,16 @@ from service.downloader.html_downloader import HTMLDownloader
 from service.downloader.image_downloader import CSDNImageDownloader
 from service.parser.csdn_parser import CSDNContentParser
 from service.persistence.persistence import OASystemPersistence
-from service.scheduler.scheduler import URLProducer, URLConsumer
+from service.scheduler.url_base_scheduler import URLScheduler, URLProducer, URLConsumer
+
 from utils.logger import logger
 
 
 class CSDNURLProducer(URLProducer):
-    def __init__(self):
-        super().__init__(task_type='CSDN')
+    def __init__(self, url_scheduler: URLScheduler):
+        super().__init__(scheduler=url_scheduler, task_type='CSDN-URL')
         self.urls = [
-            'https://blog.csdn.net/qq_29997037/article/details/127019939',
+            'https://blog.csdn.net/qq_29997037/article/details/118562651',
         ]
         self.index = 0
 
@@ -23,8 +24,8 @@ class CSDNURLProducer(URLProducer):
 
 
 class CSDNURLConsumer(URLConsumer):
-    def __init__(self):
-        super().__init__(task_type='CSDN')
+    def __init__(self, url_scheduler: URLScheduler):
+        super().__init__(scheduler=url_scheduler, task_type='CSDN-URL')
         self.persistence = OASystemPersistence()
         self.html_downloader = HTMLDownloader()
         self.image_downloader = CSDNImageDownloader()
