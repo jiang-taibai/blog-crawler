@@ -52,7 +52,7 @@ class HTMLDownloader:
                     logger.info(f"下载 {url} 成功")
                     return response.text
                 else:
-                    logger.error(f"下载 {url} 时发生错误: HTTP {response.status_code}")
+                    logger.warning(f"下载时发生错误: HTTP {response.status_code}")
             except RequestException as e:
                 logger.error(f"下载 {url} 时发生错误: {e}")
             attempt += 1
@@ -63,7 +63,7 @@ class HTMLDownloader:
 
 def main():
     downloader = HTMLDownloader()
-    url = 'https://blog.csdn.net/qq_29997037/article/details/118562651'
+    url = 'https://blog.csdn.net/qq_43430453/article/details/107704522'
     dir_path = resolve_data_path("./csdn-html/")
     md5_hash = hashlib.md5()
     md5_hash.update(url.encode('utf-8'))
