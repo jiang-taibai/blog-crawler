@@ -34,7 +34,7 @@ sequenceDiagram
         URLConsumer ->> URLScheduler: 不断获取 (type 匹配的 url)
         URLScheduler -->> URLConsumer: 返回 url
     end
-    
+
     URLConsumer ->> HTMLDownloader: 下载网页内容 (url)
     HTMLDownloader -->> URLConsumer: 返回 HTML 内容
     URLConsumer ->> ContentParser: 解析 HTML 内容
@@ -60,3 +60,17 @@ pip install -r requirements.txt
 ```shell
 python main.py
 ```
+
+## 4. 开源协议
+
+本项目基于 MIT 协议进行开源，详细内容请参阅 [LICENSE](LICENSE) 文件。
+
+## 5. 免责声明
+
+本脚本仅供学习、研究与个人使用，旨在帮助开发者理解和学习爬虫技术。请遵守相关法律法规，尊重网站的隐私政策和服务条款。
+
+- 本脚本的所有代码仅供技术交流和学习之用，不得用于任何商业用途、恶意用途或违反任何第三方权利。
+- 使用本脚本抓取网站内容时，用户需自行承担所有法律责任，确保不会对目标网站造成任何侵害。
+- 如果脚本用于抓取的数据违反了目标网站的使用条款，请立即停止使用，并删除相关数据。
+
+感谢您的理解与支持！
