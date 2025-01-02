@@ -15,7 +15,6 @@ class ImageDownloader(ABC):
         """
         self.save_dir = resolve_data_path(save_dir)
         os.makedirs(self.save_dir, exist_ok=True)
-        print(f"[Initialized] Save Directory: {self.save_dir}")
 
     @abstractmethod
     def download_image(self, url: str, filename: str = None) -> bytes:
