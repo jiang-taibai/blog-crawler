@@ -1,3 +1,4 @@
+import hashlib
 import os.path
 
 import requests
@@ -62,10 +63,12 @@ class HTMLDownloader:
 
 def main():
     downloader = HTMLDownloader()
-    url = 'https://blog.csdn.net/qq_29997037/article/details/138949768'
+    url = 'https://blog.csdn.net/penggerhe/article/details/143021794'
     content = downloader.download(url)
     dir_path = resolve_data_path("./csdn-html/")
-    file_path = os.path.join(dir_path, 'csdn.html')
+    md5_hash = hashlib.md5()
+    md5_hash.update(url.encode('utf-8'))
+    file_path = os.path.join(dir_path, f'csdn-{md5_hash.hexdigest()}.html')
     with open(file_path, 'w', encoding='utf-8') as file:
         file.write(content)
     logger.info(f"网页内容已保存到 {file_path}")
