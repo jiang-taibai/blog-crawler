@@ -105,22 +105,18 @@ class CSDNContentParser(ContentParser):
                 </div>
         :param soup: BeautifulSoup 对象
         :param content_views_element: 文章内容元素
-        :param url:  文章链接，用于生成转载声明失败后的回退链接
+        :param url:  文章链接
         :return: 修改后的 soup 对象
         """
         article_copyright_element = soup.find(class_='article-copyright')
+        article_link = url
         if article_copyright_element:
-            # 获取文章链接
-            article_link_tag = article_copyright_element.find('a', href=True)
-            article_link = article_link_tag['href'] if article_link_tag else "#"
-
             # 获取 Creative Commons 信息
             creative_commons_tag = article_copyright_element.find(class_='creativecommons')
             creative_commons = creative_commons_tag.text.strip() if creative_commons_tag else "暂未提供许可信息"
             logger.info("获取版权声明成功")
         elif url:
             logger.info("版权声明不存在，使用文章链接作为转载声明")
-            article_link = url
             creative_commons = "暂未提供许可信息"
         else:
             logger.warning("版权声明不存在，且文章链接未提供，无法生成转载声明")
@@ -206,10 +202,14 @@ class CSDNContentParser(ContentParser):
         """
         title_wrapper_element = soup.find(id='articleContentId')
         if not title_wrapper_element:
-            logger.warning("在解析 HTML 时，未找到 id='articleContentId' 的文章标题元素，使用默认标题")
+            logger.info("在解析 HTML 时，未找到 id='articleContentId' 的文章标题元素，使用默认标题")
             return "暂无标题"
         tit_element = title_wrapper_element.find(class_='tit')
         if not tit_element:
-            logger.warning("在解析 HTML 时，未找到 class='tit' 的文章标题元素，使用默认标题")
-            return "暂无标题"
+            logger.info("在解析 HTML 时，未找到 class='tit' 的文章标题元素，也许是转载文章，尝试获取转载文章标题")
+            title = title_wrapper_element.get_text().strip()
+            if not title:
+                logger.info("在解析 HTML 时，未找到 class='tit' 的文章标题元素，使用默认标题")
+                return "暂无标题"
+            return title
         return tit_element.get_text()

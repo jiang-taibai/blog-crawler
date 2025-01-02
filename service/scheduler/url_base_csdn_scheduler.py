@@ -12,18 +12,19 @@ from utils.logger import logger
 
 class CSDNURLProducer(URLProducer):
     def __init__(self, url_scheduler: URLScheduler):
-        super().__init__(scheduler=url_scheduler, task_type='CSDN-URL')
         self.urls = []
         self.index = 0
+        self.load_urls()
+        super().__init__(scheduler=url_scheduler, task_type='CSDN-URL')
 
     def load_urls(self):
-        dataset_dir = resolve_data_path('/dataset')
+        dataset_dir = resolve_data_path('./dataset')
         csdn_urls_file = os.path.join(dataset_dir, 'csdn_urls.txt')
         if not os.path.exists(csdn_urls_file):
             logger.warning(f"文件不存在: {csdn_urls_file}，无法加载CSDN博客链接")
             return
         with open(csdn_urls_file, 'r') as f:
-            self.urls = f.readlines()
+            self.urls = [line.strip() for line in f.readlines()]
 
     def _generate_url(self):
         url = self.urls[self.index]
