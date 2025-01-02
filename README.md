@@ -36,7 +36,7 @@ sequenceDiagram
         loop 不断获取 Task
             Consumer ->> Scheduler: 获取 Task
             Scheduler -->> Consumer: 返回 url
-            Consumer ->> Consumer: 处理 URL
+            Consumer ->> Consumer: 处理 Task
         end
     else 运行条件：Scheduler 已停止工作
         Consumer ->> Consumer: 停止
@@ -54,6 +54,9 @@ sequenceDiagram
 ```
 
 ### 2.2 项目实现的基于 TYPE-URL 的生产者-调度器-消费者模型
+
+URLProducer、URLScheduler、URLConsumer 三个类分别继承自 Producer、Scheduler、Consumer 类，由父类完成基础的生产者-调度器-消费者模型的实现。
+同时 URLProducer、URLScheduler、URLConsumer 等类定义了对应的接口，由子类实现具体的业务逻辑。
 
 ```mermaid
 sequenceDiagram
@@ -73,19 +76,19 @@ sequenceDiagram
     loop 不断获取 URL
         URLConsumer ->> URLScheduler: 不断获取 (type 匹配的 url)
         URLScheduler -->> URLConsumer: 返回 url
+        URLConsumer ->> HTMLDownloader: 下载网页内容 (url)
+        HTMLDownloader -->> URLConsumer: 返回 HTML 内容
+        URLConsumer ->> ContentParser: 解析 HTML 内容
+        ContentParser ->> ImageDownloader: 下载图片
+        ImageDownloader -->> ContentParser: 返回图片字节流
+        ContentParser ->> Persistence: 镜像存储图片
+        Persistence -->> ContentParser: 返回镜像链接
+        ContentParser ->> ContentParser: 替换网页内容中的图片链接
+        ContentParser -->> URLConsumer: 返回解析结果 (标题、内容、图片链接等)
+        URLConsumer ->> Persistence: 持久化博客数据 (标题、内容、封面、简介等)
+        Persistence -->> URLConsumer: 数据持久化完成
     end
 
-    URLConsumer ->> HTMLDownloader: 下载网页内容 (url)
-    HTMLDownloader -->> URLConsumer: 返回 HTML 内容
-    URLConsumer ->> ContentParser: 解析 HTML 内容
-    ContentParser ->> ImageDownloader: 下载图片
-    ImageDownloader -->> ContentParser: 返回图片字节流
-    ContentParser ->> Persistence: 镜像存储图片
-    Persistence -->> ContentParser: 返回镜像链接
-    ContentParser ->> ContentParser: 替换网页内容中的图片链接
-    ContentParser -->> URLConsumer: 返回解析结果 (标题、内容、图片链接等)
-    URLConsumer ->> Persistence: 持久化博客数据 (标题、内容、封面、简介等)
-    Persistence -->> URLConsumer: 数据持久化完成
 ```
 
 ## 3. 快速开始
