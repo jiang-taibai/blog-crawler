@@ -55,7 +55,8 @@ sequenceDiagram
 
 ### 2.2 项目实现的基于 TYPE-URL 的生产者-调度器-消费者模型
 
-URLProducer、URLScheduler、URLConsumer 三个类分别继承自 Producer、Scheduler、Consumer 类，由父类完成基础的生产者-调度器-消费者模型的实现。
+URLProducer、URLScheduler、URLConsumer 三个类分别继承自 Producer、Scheduler、Consumer 类，由父类完成基础的生产者-调度器-消费者模型的实现，完成自己的生命周期管理。
+
 同时 URLProducer、URLScheduler、URLConsumer 等类定义了对应的接口，由子类实现具体的业务逻辑。
 
 ```mermaid
