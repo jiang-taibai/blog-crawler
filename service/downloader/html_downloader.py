@@ -63,14 +63,15 @@ class HTMLDownloader:
 
 def main():
     downloader = HTMLDownloader()
-    url = 'https://blog.csdn.net/penggerhe/article/details/143021794'
-    content = downloader.download(url)
+    url = 'https://blog.csdn.net/qq_29997037/article/details/118562651'
     dir_path = resolve_data_path("./csdn-html/")
     md5_hash = hashlib.md5()
     md5_hash.update(url.encode('utf-8'))
     file_path = os.path.join(dir_path, f'csdn-{md5_hash.hexdigest()}.html')
-    with open(file_path, 'w', encoding='utf-8') as file:
-        file.write(content)
+    if not os.path.exists(file_path):
+        content = downloader.download(url)
+        with open(file_path, 'w', encoding='utf-8') as file:
+            file.write(content)
     logger.info(f"网页内容已保存到 {file_path}")
 
 
