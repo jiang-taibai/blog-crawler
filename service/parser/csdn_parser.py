@@ -74,7 +74,7 @@ class CSDNContentParser(ContentParser):
         image_urls = []
         images = content_views_element.find_all('img')
         for img in images:
-            original_src = img.get('src', '')
+            original_src = img.get('src', None)
             if original_src:
                 try:
                     img_data = self.image_downloader.download_image(original_src)
@@ -119,7 +119,7 @@ class CSDNContentParser(ContentParser):
             creative_commons = creative_commons_tag.text.strip() if creative_commons_tag else "暂未提供许可信息"
             logger.info("获取版权声明成功")
         elif url:
-            logger.warning("版权声明不存在，使用文章链接作为转载声明")
+            logger.info("版权声明不存在，使用文章链接作为转载声明")
             article_link = url
             creative_commons = "暂未提供许可信息"
         else:
@@ -155,7 +155,7 @@ class CSDNContentParser(ContentParser):
                     cover_src = upload_response.get('data').get('url')
                     return cover_src
             except Exception as e:
-                logger.warning(f"下载/上传封面图片失败: {e}")
+                logger.info(f"下载/上传封面图片失败: {e}")
         logger.info("文章中未出现图片，不使用封面")
         return None
 
