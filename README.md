@@ -89,14 +89,39 @@ sequenceDiagram
 
 ## 3. 快速开始
 
+### 3.1 配置环境
+
 ```shell
 conda create -n blog-crawler python=3.9
 conda activate blog-crawler
 pip install -r requirements.txt
 ```
 
-1. 配置项：如果你使用的是 OASystemPersistence 服务，那么必须新建并配置 `./config/application-prod.json` 文件，参考 `./config/application-dev.json` 的说明填写配置信息。
+## 3.2 项目配置
+
+1. 配置项：
+   - 如果你使用的是 `OASystemPersistence` 服务，那么必须新建并配置 `./config/application-prod.json` 文件，参考
+      `./config/application-dev.json` 的说明填写配置信息。
+   - 如果使用的是 `LocalPersistence` 服务，暂时无需配置。
 2. URL 链接文件：新建并填写 `./data/dataset/csdn_urls.txt` 文件，填写需要爬取的 URL 链接。每行一个 URL。
+
+这里提供一个简单的获取 URL 的方式
+
+如果你想博客搬家，那么打开你的主页，运行下面的脚本，获取当前页面的所有文章链接。将输出的链接粘贴到
+`./data/dataset/csdn_urls.txt` 文件中。
+
+```javascript
+(() => {
+    // 请替换为你的博客ID
+    const id = 'qq_29997037'
+    const hrefs = Array.from(document.querySelectorAll('a'))
+        .map(element => element.getAttribute('href'))
+        .filter(href => href && href.includes(`/${id}/article/details/`));
+    console.log(hrefs.join('\n'));
+})();
+```
+
+### 3.3 启动项目
 
 ```shell
 python main.py
