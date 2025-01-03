@@ -2,10 +2,10 @@ import json
 import os.path
 import time
 import uuid
-from typing import cast
 
 from service.persistence.persistence import Persistence
 from utils.data import resolve_data_path
+from utils.utils import generate_random_string
 
 
 class LocalPersistence(Persistence):
@@ -15,7 +15,7 @@ class LocalPersistence(Persistence):
 
     def __init__(self):
         super().__init__()
-        work_dir = f'./local-persistence/{time.strftime("%Y%m%d%H%M%S")}-{str(uuid.uuid4()).replace("-", "")}'
+        work_dir = f'./local-persistence/{time.strftime("%Y%m%d%H%M%S")}-{generate_random_string()}'
         db_dir_path = resolve_data_path(f'{work_dir}')
         self.img_dir_path = resolve_data_path(f'{work_dir}/img')
         self.html_dir_path = resolve_data_path(f'{work_dir}/html')
