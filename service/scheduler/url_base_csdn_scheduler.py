@@ -3,7 +3,7 @@ import os
 from service.downloader.html_downloader import HTMLDownloader
 from service.downloader.image_downloader import CSDNImageDownloader
 from service.parser.csdn_parser import CSDNContentParser
-from service.persistence.persistence import OASystemPersistence
+from service.persistence.persistence import Persistence
 from service.scheduler.url_base_scheduler import URLScheduler, URLProducer, URLConsumer
 from utils.data import resolve_data_path
 
@@ -35,9 +35,9 @@ class CSDNURLProducer(URLProducer):
 
 
 class CSDNURLConsumer(URLConsumer):
-    def __init__(self, url_scheduler: URLScheduler):
+    def __init__(self, url_scheduler: URLScheduler, persistence: Persistence):
         super().__init__(scheduler=url_scheduler, task_type='CSDN-URL')
-        self.persistence = OASystemPersistence()
+        self.persistence = persistence
         self.html_downloader = HTMLDownloader()
         self.image_downloader = CSDNImageDownloader()
         self.parser = CSDNContentParser(self.persistence, self.image_downloader)
