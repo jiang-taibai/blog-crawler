@@ -22,29 +22,27 @@ sequenceDiagram
     participant Producer as Producer
     participant Scheduler as Scheduler
     participant Consumer as Consumer
-
-    loop 不断生成 Task
+    Producer ->> Scheduler: 注册生产者
+    alt 还有更多 Task
         Producer ->> Scheduler: 发送 Task
         Scheduler -->> Producer: 确认接收
-        break 已无更多 Task
-            Producer ->> Producer: 停止
-        end
+    else 已无更多 Task
+        Producer ->> Producer: 停止
     end
 
-    loop 不断获取 Task
+    Consumer ->> Scheduler: 注册消费者
+    alt 还有更多 Task
         Consumer ->> Scheduler: 获取 Task
         Scheduler -->> Consumer: 返回 url
         Consumer ->> Consumer: 处理 Task
-        break Scheduler 已停止工作
-            Consumer ->> Consumer: 停止
-        end
+    else Scheduler 已停止工作
+        Consumer ->> Consumer: 停止
     end
 
-    loop 循环自我管理
-        Scheduler -->> Scheduler: 继续工作
-        break 所有生产者都停止工作，并且所有的队列为空
-            Scheduler -->> Scheduler: 停止工作
-        end
+    alt 持续监听
+        Scheduler ->> Scheduler: 继续工作
+    else 所有生产者都停止工作，并且所有的队列为空
+        Scheduler ->> Scheduler: 停止工作
     end
 
 ```
