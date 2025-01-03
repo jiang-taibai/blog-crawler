@@ -95,7 +95,8 @@ conda activate blog-crawler
 pip install -r requirements.txt
 ```
 
-新建并配置 `./config/application-prod.json` 文件，参考 `./config/application-dev.json` 的说明填写配置信息。
+1. 配置项：如果你使用的是 OASystemPersistence 服务，那么必须新建并配置 `./config/application-prod.json` 文件，参考 `./config/application-dev.json` 的说明填写配置信息。
+2. URL 链接文件：新建并填写 `./data/dataset/csdn_urls.txt` 文件，填写需要爬取的 URL 链接。每行一个 URL。
 
 ```shell
 python main.py
