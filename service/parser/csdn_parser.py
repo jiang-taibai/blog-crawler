@@ -33,15 +33,15 @@ class CSDNContentParser(ContentParser):
         # 3. 获取文章前 100 个字符作为简介
         brief = content_views_element.get_text()[:100]
 
-        # 4. 遍历所有 img 标签，转换 src 属性，返回图片链接列表
+        # 4. 获取封面图片
+        cover = self.get_cover(content_views_element)
+
+        # 5. 遍历所有 img 标签，转换 src 属性，返回图片链接列表
         image_urls = self.image_mirror_storage(content_views_element)
 
-        # 5. 添加转载声明
+        # 6. 添加转载声明
         blog_url = kwargs['url'] if 'url' in kwargs else None
         self.add_repost_notice(soup, content_views_element, blog_url)
-
-        # 6. 获取封面图片
-        cover = self.get_cover(content_views_element)
 
         # 7. 代码块优化
         self.parse_code(content_views_element)
